@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Deadline Guardian</title>
+  <style>
+    :root { --bg:#060b16; --ink:#eff6ff; --muted:#b0c3de; --panel:rgba(255,255,255,.08); --line:rgba(255,255,255,.2); --brand:#55d7ff; --hot:#ff7d8f; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI,Tahoma,sans-serif;color:var(--ink);background:radial-gradient(circle at 20% 15%,#1a2c66 0%,transparent 38%),radial-gradient(circle at 85% 80%,#16443b 0%,transparent 42%),var(--bg)}
+    .wrap{max-width:1100px;margin:28px auto;padding:0 16px}
+    .hero,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(7px);box-shadow:0 18px 44px rgba(0,0,0,.45)}
+    .hero{padding:20px}.hero h1{margin:0}.hero p{color:#d6e8ff}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}
+    .card{padding:14px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .s{border:1px solid var(--line);border-radius:10px;padding:10px;background:rgba(255,255,255,.06);text-align:center}
+    .s b{font-size:24px}
+    table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.1);text-align:left}
+    th{background:rgba(5,12,25,.85);position:sticky;top:0}
+    input,select{width:100%;padding:9px;border-radius:9px;border:1px solid var(--line);background:#f7fbff}
+    label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
+    button{margin-top:10px;border:0;border-radius:10px;padding:10px 12px;font-weight:700;background:linear-gradient(120deg,var(--brand),#57f0c0);color:#03223b;cursor:pointer}
+    .pill{padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+    .high{background:rgba(255,125,143,.2);color:#ffccd5;border:1px solid rgba(255,125,143,.5)}
+    .medium{background:rgba(255,194,117,.2);color:#ffe5c0;border:1px solid rgba(255,194,117,.5)}
+    .low{background:rgba(105,240,176,.18);color:#c9ffe4;border:1px solid rgba(105,240,176,.5)}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Student Deadline Guardian</h1>
+      <p>Track deadlines, see urgency, and generate a weekly digest in one place.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="stats">
+          <div class="s"><div>Total</div><b id="st-total">0</b></div>
+          <div class="s"><div>High Priority</div><b id="st-high">0</b></div>
+          <div class="s"><div>Due in 7 Days</div><b id="st-week">0</b></div>
+        </div>
+        <table>
+          <thead><tr><th>Title</th><th>Course</th><th>Due</th><th>Priority</th><th>Days Left</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0">Add New Deadline</h3>
+        <label>Title</label><input id="title" />
+        <label>Course</label><input id="course" />
+        <label>Category</label><input id="category" value="assignment" />
+        <label>Due Date</label><input id="due" type="date" />
+        <label>Priority</label><select id="priority"><option>high</option><option>medium</option><option>low</option></select>
+        <label>Notes</label><input id="notes" />
+        <button id="addBtn">Add Deadline</button>
+        <button id="digestBtn" style="background:linear-gradient(120deg,#ffb25e,#55d7ff)">Show Weekly Digest</button>
+        <pre id="out" style="white-space:pre-wrap;background:#08152d;color:#d7fff0;padding:10px;border-radius:10px;border:1px solid var(--line);min-height:120px"></pre>
+      </div>
+    </div>
+  </div>
+
+<script>
+async function loadSummary(){
+  const s = await fetch('/summary').then(r=>r.json());
+  document.getElementById('st-total').textContent = s.total;
+  document.getElementById('st-high').textContent = s.high_priority;
+  document.getElementById('st-week').textContent = s.within_7_days;
+}
+
+function badge(p){ return `<span class="pill ${p}">${p}</span>`; }
+
+async function loadDeadlines(){
+  const rows = document.getElementById('rows'); rows.innerHTML='';
+  const data = await fetch('/deadlines').then(r=>r.json());
+  data.forEach(d=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${d.title}</td><td>${d.course}</td><td>${d.due_date}</td><td>${badge(d.priority)}</td><td>${d.days_left}</td>`;
+    rows.appendChild(tr);
+  });
+}
+
+async function addDeadline(){
+  const payload = {
+    title: document.getElementById('title').value,
+    course: document.getElementById('course').value,
+    category: document.getElementById('category').value,
+    due_date: document.getElementById('due').value,
+    priority: document.getElementById('priority').value,
+    notes: document.getElementById('notes').value
+  };
+  const res = await fetch('/deadlines',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(r=>r.json());
+  document.getElementById('out').textContent = JSON.stringify(res,null,2);
+  loadSummary(); loadDeadlines();
+}
+
+async function showDigest(){
+  const d = await fetch('/digest').then(r=>r.json());
+  document.getElementById('out').textContent = d.items.join('\n');
+}
+
+document.getElementById('addBtn').addEventListener('click', addDeadline);
+document.getElementById('digestBtn').addEventListener('click', showDigest);
+loadSummary(); loadDeadlines();
+</script>
+</body>
+</html>

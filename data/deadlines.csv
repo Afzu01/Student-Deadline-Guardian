@@ -1,0 +1,21 @@
+id,title,course,category,due_date,priority,notes
+1,Linear Algebra Assignment 3,MA201,assignment,2026-03-12,high,Matrix diagonalization problems
+2,Operating Systems Quiz,CS302,quiz,2026-03-13,medium,Process synchronization
+3,Scholarship Renewal Form,Admin,admin,2026-03-14,high,Upload income certificate
+4,AI Lab Mini Project,DS401,project,2026-03-16,high,Train baseline classifier
+5,Hackathon Registration,Club,event,2026-03-17,medium,Team details required
+6,Database Midterm,CS310,exam,2026-03-18,high,Normalization and indexing
+7,Python Assignment 5,CS101,assignment,2026-03-19,medium,File processing
+8,Internship Application Follow-up,Career,career,2026-03-20,high,Email recruiter updates
+9,UI Design Submission,SE220,assignment,2026-03-21,medium,Figma prototype
+10,Cloud Lab Viva,CS420,viva,2026-03-22,high,Kubernetes basics
+11,Data Structures Quiz 4,CS202,quiz,2026-03-23,medium,Trees and heaps
+12,Resume Review Session,Career,career,2026-03-24,low,Bring latest CV
+13,Electronics Lab Record,EC110,lab,2026-03-25,medium,Complete observations
+14,Campus Ambassador Form,Admin,admin,2026-03-26,low,Department approval
+15,Probability Homework,MA203,assignment,2026-03-27,medium,Bayesian exercises
+16,Machine Learning Case Study,DS402,project,2026-03-28,high,Feature engineering report
+17,Open Source Sprint,Club,event,2026-03-29,low,Contribution log
+18,Communication Skills Presentation,HS102,presentation,2026-03-30,medium,5 minute speaking slot
+19,Capstone Proposal Draft,DS499,project,2026-04-01,high,Problem statement and scope
+20,Hostel Fee Payment,Admin,admin,2026-04-03,high,Payment receipt upload
