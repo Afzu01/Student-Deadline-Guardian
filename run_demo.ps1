@@ -1,4 +1,20 @@
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8100
+$ErrorActionPreference = "Stop"
+Set-Location $PSScriptRoot
+
+$port = 8100
+$pythonExe = ".\.venv\Scripts\python.exe"
+
+if (!(Test-Path $pythonExe)) {
+	py -3.12 -m venv .venv
+}
+
+& $pythonExe -m pip install -r requirements.txt
+
+# Start API server in a separate process so this script can open the browser.
+Start-Process -FilePath $pythonExe -ArgumentList "-m", "uvicorn", "app.main:app", "--reload", "--port", "$port" -WorkingDirectory $PSScriptRoot
+
+Start-Sleep -Seconds 2
+Start-Process "http://127.0.0.1:$port/ui"
+
+Write-Host "Student Deadline Guardian is starting on http://127.0.0.1:$port"
+Write-Host "Docs: http://127.0.0.1:$port/docs"
