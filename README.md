@@ -1,61 +1,70 @@
 # Student Deadline Guardian
 
-A practical student productivity app that helps track deadlines, urgency, and weekly planning.
+I built Student Deadline Guardian as a small planning app for keeping academic and other important deadlines in one place. It uses due dates and priority labels to show what is coming up and provides a short list of upcoming items.
 
-## Portfolio pitch
+The backend is written with FastAPI. Deadline records are stored in a CSV file, and a browser interface is served from `/ui`.
 
-An operations-style planning tool for students that turns scattered due dates into clear, prioritized weekly action.
+## Features in the code
 
-## Why this helps real users
+- List deadlines with calculated days remaining: `GET /deadlines`.
+- View a summary of total deadlines, high-priority items, and items within seven days: `GET /summary`.
+- Add a deadline: `POST /deadlines`.
+- Generate a short upcoming-deadline digest: `GET /digest`.
+- Open the browser interface at `/ui`.
+- Explore the API through FastAPI docs at `/docs`.
 
-- Prevents missed deadlines with urgency visibility
-- Keeps high-priority work visible
-- Generates digest-style checklist for weekly planning
+## Technology
 
-## Features
+- Python
+- FastAPI and Pydantic
+- pandas
+- CSV file storage
+- HTML, CSS, and JavaScript interface
 
-- Deadline dashboard with days-left logic
-- Priority summary cards
-- Add-new deadline form
-- Weekly digest endpoint
-- 3D-style modern interface at `/ui`
+## Run locally
 
-## Architecture
-
-- FastAPI backend with CSV-backed deadline data
-- Priority scoring from due date + impact fields
-- Frontend dashboard for quick planning and updates
-
-## Run
+On Windows PowerShell:
 
 ```powershell
-cd D:\Code\python\student-deadline-guardian
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8100
 ```
 
-- UI: http://127.0.0.1:8100/ui
-- Docs: http://127.0.0.1:8100/docs
+Open:
 
-## API quick test
+- Interface: http://127.0.0.1:8100/ui
+- API documentation: http://127.0.0.1:8100/docs
+
+## API quick checks
+
+Get the deadline summary:
 
 ```powershell
-Invoke-RestMethod -Method GET -Uri "http://127.0.0.1:8100/deadlines/summary"
+Invoke-RestMethod -Method GET -Uri "http://127.0.0.1:8100/summary"
 ```
 
-## Recruiter demo points
+Get the upcoming digest:
 
-1. Open `/ui` and show summary cards
-2. Add a new deadline and show instant dashboard update
-3. Show digest output and explain weekly planning impact
+```powershell
+Invoke-RestMethod -Method GET -Uri "http://127.0.0.1:8100/digest"
+```
 
-## Dataset
+## Data storage and limitations
 
-- 20 realistic academic + admin + career deadlines in `data/deadlines.csv`
+The current implementation reads and writes `data/deadlines.csv`. This is simple for a local prototype, but it is not a multi-user database and does not provide concurrent-write protection.
 
-## Screenshots / Demo GIF
+The application code is present, but automated tests and deployment have not been verified.
 
-- Add your UI screenshot here after first run
-- Optional: add a 10-15 second GIF of adding a deadline and refreshing summary
+## Possible next steps
+
+- Move deadline storage to SQLite or PostgreSQL.
+- Add edit and delete operations.
+- Add validation for priority and category values.
+- Add automated tests for date calculations and API routes.
+- Add reminders or calendar integration.
+
+## Author
+
+**Afzal Hussain** · [@Afzu01](https://github.com/Afzu01)
